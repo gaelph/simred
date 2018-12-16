@@ -1,0 +1,5 @@
+export const Filters = {
+  ALL_TODOS: 'ALL_TODOS',
+  ACTIVE_TODOS: 'ACTIVE_TODOS',
+  COMPLETED_TODOS: 'COMPLETED_TODOS'
+}
