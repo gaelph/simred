@@ -1,0 +1,33 @@
+{
+  "name": "simred",
+  "version": "1.0.0",
+  "description": "A simple redux-like application state manager",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "babel src --out-dir ./lib",
+    "test": "cross-env NODE_ENV=test nyc --reporter=html --reporter=text mocha tests"
+  },
+  "keywords": [
+    "state",
+    "manager",
+    "state",
+    "management",
+    "redux"
+  ],
+  "author": "Gaël PHILIPPE",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.2.0",
+    "@babel/core": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
+    "babel-plugin-istanbul": "^5.1.0",
+    "chai": "^4.2.0",
+    "cross-env": "^5.2.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^5.2.0",
+    "nyc": "^13.1.0"
+  },
+  "nyc": {
+    "exclude": [ "src", "tests" ]
+  }
+}
