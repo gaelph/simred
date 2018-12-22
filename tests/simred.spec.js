@@ -1,6 +1,3 @@
-const mocha = require('mocha')
-const { expect } = require('chai')
-
 const { default: Simred, createReducer } = require('../lib/index')
 
 const fixtures = {
@@ -24,7 +21,7 @@ describe('Simred test Suite', function () {
   })
 
   it('reducers are mandatory', function () {
-    expect(Simred.createStore).to.throw()
+    expect(Simred.createStore).toThrow()
   })
 
   it('creates a reducer', function () {
@@ -32,16 +29,16 @@ describe('Simred test Suite', function () {
 
     const reducer = createReducer(actions, initialState)
 
-    expect(reducer).to.be.an('object')
-    expect(reducer).to.have.property('actions')
-    expect(reducer).to.have.property('state')
+    expect(typeof reducer).toBe('object')
+    expect(reducer).toHaveProperty('actions')
+    expect(reducer).toHaveProperty('state')
 
-    expect(reducer.actions).to.be.an('object')
-    expect(reducer.actions).to.have.property('add')
-    expect(reducer.actions.add).to.be.a('function')
+    expect(typeof reducer.actions).toBe('object')
+    expect(reducer.actions).toHaveProperty('add')
+    expect(typeof reducer.actions.add).toBe('function')
 
-    expect(reducer.state).to.be.an('array')
-    expect(reducer.state).to.be.empty
+    expect(Array.isArray(reducer.state)).toBeTruthy()
+    expect(reducer.state.length).toBe(0)
   })
 
   it("creates a store", function () {
@@ -52,16 +49,16 @@ describe('Simred test Suite', function () {
 
     const store = Simred.createStore(reducers)
 
-    expect(store).to.be.an('object')
-    expect(store).to.have.property('getState')
-    expect(store).to.have.property('getActions')
-    expect(store).to.have.property('subscribe')
-    expect(store).to.have.property('addMiddleware')
+    expect(typeof store).toBe('object')
+    expect(store).toHaveProperty('getState')
+    expect(store).toHaveProperty('getActions')
+    expect(store).toHaveProperty('subscribe')
+    expect(store).toHaveProperty('addMiddleware')
 
-    expect(store.getState).to.be.a('function')
-    expect(store.getActions).to.be.a('function')
-    expect(store.subscribe).to.be.a('function')
-    expect(store.addMiddleware).to.be.a('function')
+    expect(typeof store.getState).toBe('function')
+    expect(typeof store.getActions).toBe('function')
+    expect(typeof store.subscribe).toBe('function')
+    expect(typeof store.addMiddleware).toBe('function')
   })
 
   it('getState() returns a copy of the state', function () {
@@ -75,8 +72,8 @@ describe('Simred test Suite', function () {
     const state = store.getState()
     const otherState = store.getState()
 
-    expect(state).to.deep.equal(otherState)
-    expect(state === otherState).to.be.false
+    expect(state).toMatchObject(otherState)
+    expect(state).toStrictEqual(otherState)
   })
 
   it('getActions() returns all actions', function () {
@@ -88,9 +85,9 @@ describe('Simred test Suite', function () {
     const store = Simred.createStore(reducers)
     const storeActions = store.getActions()
 
-    expect(storeActions).to.have.property('list')
-    expect(storeActions.list).to.have.property('add')
-    expect(storeActions.list.add).to.be.a('function')
+    expect(storeActions).toHaveProperty('list')
+    expect(storeActions.list).toHaveProperty('add')
+    expect(typeof storeActions.list.add).toBe('function')
   })
 
   it('module and object getState() and getActions() have same result', function () {
@@ -107,8 +104,8 @@ describe('Simred test Suite', function () {
     const objectState = store.getState()
     const objectActions = store.getActions()
     
-    expect(moduleState).to.deep.equal(objectState)
-    expect(moduleActions).to.deep.equal(objectActions)
+    expect(moduleState).toMatchObject(objectState)
+    expect(moduleActions).toMatchObject(objectActions)
   })
 
   it('calls subscribers when the state mutates', function () {
@@ -127,8 +124,8 @@ describe('Simred test Suite', function () {
 
     store.getActions().list.add('test')
 
-    expect(moddedState).to.not.deep.equal(initState)
-    expect(moddedState).to.deep.equal({ list: ['test'] })
+    expect(moddedState).not.toMatchObject(initState)
+    expect(moddedState).toMatchObject({ list: ['test'] })
   })
 
   it('calls middlewares when an action is called', function () {
@@ -150,9 +147,9 @@ describe('Simred test Suite', function () {
 
     store.getActions().list.add('test')
 
-    expect(middlewarecalls).to.have.lengthOf(1)
-    expect(middlewarecalls[0].actionName).to.equal('list.add')
-    expect(middlewarecalls[0].actionPayload).to.deep.equal(['test'])
+    expect(middlewarecalls.length).toBe(1)
+    expect(middlewarecalls[0].actionName).toBe('list.add')
+    expect(middlewarecalls[0].actionPayload).toEqual(expect.arrayContaining(['test']))
   })
 
   it('loads a stored state', function () {
@@ -164,7 +161,7 @@ describe('Simred test Suite', function () {
 
     const store = Simred.createStore(reducers, state)
 
-    expect(state).to.deep.equal(store.getState())
+    expect(state).toMatchObject(store.getState())
 
   })
 
@@ -190,7 +187,7 @@ describe('Simred test Suite', function () {
       Simred.createStore({ todos: reducer })
     }
 
-    expect(badStore).to.throw()
+    expect(badStore).toThrow()
   })
 
   it('reducers without an initial state have actions receiving the whole state', function () {
@@ -228,19 +225,19 @@ describe('Simred test Suite', function () {
     const resultState = store.getState()
     const resultActions = store.getActions()
 
-    expect(resultState).to.have.property('todos')
-    expect(resultActions).to.have.property('todos')
+    expect(resultState).toHaveProperty('todos')
+    expect(resultActions).toHaveProperty('todos')
 
-    expect(resultState).to.have.property('list')
-    expect(resultActions).to.have.property('list')
+    expect(resultState).toHaveProperty('list')
+    expect(resultActions).toHaveProperty('list')
 
-    expect(resultState).to.not.have.property('shared')
-    expect(resultActions).to.have.property('shared')
+    expect(resultState).not.toHaveProperty('shared')
+    expect(resultActions).toHaveProperty('shared')
 
     resultActions.shared.doSomething()
     const updatedState = store.getState()
 
-    expect(receivedState).to.deep.equal(updatedState)
+    expect(receivedState).toMatchObject(updatedState)
 
   })
 
@@ -260,7 +257,7 @@ describe('Simred test Suite', function () {
       list: createReducer(actions, initialState)
     })
 
-    expect(store.getActions().list.add).to.not.throw()
+    expect(store.getActions().list.add).not.toThrow()
   })
 
 })
@@ -281,9 +278,8 @@ describe('Asynchronous Actions', function () {
 
     return new Promise(resolve => {
       store.subscribe((state) => {
-        expect(state).to.have.property('list')
-        expect(state.list).to.be.an('array')
-        expect(state.list).to.include('a')
+        expect(state).toHaveProperty('list')
+        expect(state.list).toEqual(expect.arrayContaining(['a']))
 
         resolve()
       })

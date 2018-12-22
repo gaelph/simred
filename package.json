@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "babel src --out-dir ./lib",
-    "test": "cross-env NODE_ENV=test nyc --reporter=html --reporter=text mocha tests"
+    "test": "jest --coverage"
   },
   "keywords": [
     "state",
@@ -17,17 +17,15 @@
   "author": "Gaël PHILIPPE",
   "license": "MIT",
   "devDependencies": {
-    "@babel/cli": "^7.2.0",
-    "@babel/core": "^7.2.0",
-    "@babel/preset-env": "^7.2.0",
+    "babel-cli": "^6.26.0",
+    "babel-jest": "^23.6.0",
     "babel-plugin-istanbul": "^5.1.0",
-    "chai": "^4.2.0",
-    "cross-env": "^5.2.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-esnext": "^1.1.3",
+    "babel-preset-react": "^6.24.1",
     "istanbul": "^0.4.5",
-    "mocha": "^5.2.0",
-    "nyc": "^13.1.0"
+    "jest": "^23.6.0",
+    "react-test-renderer": "^16.7.0"
   },
-  "nyc": {
-    "exclude": [ "src", "tests" ]
-  }
+  "dependencies": {}
 }
