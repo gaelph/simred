@@ -54,7 +54,9 @@ const counter = createReducer(
     increment: (state) => () => state + 1,
     decrement: (state) => () => state - 1
   },
-  0 /* initial value for the state */)
+  /* initial value for the state */
+  0
+)
 
 // Creates a Simred store to hold your data
 const store = Simred.createStore({ counter })
@@ -65,7 +67,7 @@ store.subscribe(state => console.log(state))
 
 // The only way to change the state is to call an action
 // you can access actions through the getActions() getter
-const actions = store.getActions()
+const actions = store.actions
 
 actions.counter.increment() // state == { counter: 1 }
 actions.counter.increment() // state == { counter: 2 }
@@ -90,11 +92,12 @@ Actions in the reducers should not mutate the state, but return a new object.
 ### Actions
 Actions are the only way to change the state.
 They are functions of a reducer (see next section) with the following signature:
-```js
+```typescript
 // synchronous actions
-(state, actions) => (...args) => state_update
+(state: State, actions: Actions) => (...args: any[]) => Partial<State>
+
 // asynchronous actions
-(state, actions) => async (...args) => state_update
+(state: State, actions: Actions) => async (...args: any[]) => Partial<State>
 ```
 The `state` argument is a copy of the part of state the action relates to.
 The `actions` argument is a read-only object containing all other actions in the store.
@@ -181,7 +184,7 @@ Actions in `reducerB` can only interact with `storeState.a` by calling actions d
 
 export default createReducer(
   {
-    add: (state, actions) => (item) => [...state, item]
+    add: (state, _actions) => (item) => [...state, item]
   },
   // initial state
   []
@@ -259,8 +262,8 @@ Middlewares can be used to intercept actions as they are propagated through the 
 They can be used for a variety of things, such as logging, storing the state, etc.
 
 A middleware consist in a function with signature:
-```js
-(action, args, next) => undefined
+```typescript
+(action: string, args: any[], next: Function) => void
 ```
 Where:
  - `action` is the name of the part of state and of the function (e.g.: `"todos.add"`)
@@ -272,7 +275,7 @@ Here is an example of a logging middleware:
 store.addMiddleware((action, args, next) => {
   console.log({ action, args })
 
-  next()
+  next() // Calls the next middleware on the stack
 })
 ```
 ---
