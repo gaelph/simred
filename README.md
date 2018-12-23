@@ -167,8 +167,7 @@ export const rootReducer = {
   b: reducerB
 }
 
-// The store will have a state of the shape
-// { a: [], b: { value: false } }
+// storeState == { a: [], b: { value: false } }
 ```
 Actions from `reducerA` will receive `storeState.a` as `state`.
 Actions from `reducerB` will receive `storeState.b` as `state`.
