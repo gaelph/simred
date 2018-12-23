@@ -13,9 +13,8 @@ A simple redux-like application state manager
 
 ### TO DO
 - [ ] redux-dev-tools support
-- [ ] better handling of thunks
 
-## Table of content
+## Table of Content
 - [Installation](#installation)
 - [Getting Started](#getting-started)
 - [Core Concepts](#core-concepts)
