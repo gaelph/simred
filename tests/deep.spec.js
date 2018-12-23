@@ -1,4 +1,4 @@
-const deep = require('../lib/deep')
+const deep = require('../src/deep')
 
 describe('Deep copy', function () {
   it('copies complex object', function () {
