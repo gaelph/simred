@@ -52,8 +52,8 @@ import Simred, { createReducer } from 'simred'
 const counter = createReducer(
   // actions
   {
-    increment: (state, actions) => state + 1,
-    decrement: (state, actions) => state - 1
+    increment: (state) => () => state + 1,
+    decrement: (state) => () => state - 1
   },
   0 /* initial value for the state */)
 
@@ -92,7 +92,10 @@ Actions in the reducers should not mutate the state, but return a new object.
 Actions are the only way to change the state.
 They are functions of a reducer (see next section) with the following signature:
 ```js
-(state, actions, ...args) => state_update
+// synchronous actions
+(state, actions) => (...args) => state_update
+// asynchronous actions
+(state, actions) => async (...args) => state_update
 ```
 The `state` argument is a copy of the part of state the action relates to.
 The `actions` argument is a read-only object containing all other actions in the store.
@@ -108,11 +111,8 @@ Actions must:
 
 > **Important**
 >
-> These arguments are automatically added to the arguments list.
-> You **must** omit them when calling the action.
-> 
 > Example declaration:
-> `const increment = (state, actions, n) => state + n`
+> `const increment = (state, actions) => (n) => state + n`
 > 
 > Example call:
 > `actions.counter.increment(3)`
@@ -136,7 +136,7 @@ A reducer managing only a part of state:
 import { createReducer } from 'simred'
 
 const actions = {
-  add: (state, actions, item) => [...state, item]
+  add: (state, actions) => (item) => [...state, item]
 }
 
 const initialState = []
@@ -148,7 +148,7 @@ A reducer managing the whole state:
 import { createReducer } from 'simred'
 
 const actions = {
-  add: (state, actions, item) => ({
+  add: (state, actions) => (item) => ({
     list: [...state.list, item],
     counter: state.list.length + 1
   })
@@ -182,7 +182,7 @@ Actions in `reducerB` can only interact with `storeState.a` by calling actions d
 
 export default createReducer(
   {
-    add: (state, actions, item) => [...state, item]
+    add: (state, actions) => (item) => [...state, item]
   },
   // initial state
   []
@@ -195,7 +195,7 @@ export default createReducer(
 
 export default createReducer(
   {
-    setValue: (state, actions, value) => {
+    setValue: (state, actions) => (value) => {
       // calls "add" from reducerA
       actions.a.add(value) 
 
@@ -244,7 +244,7 @@ console.log(store.getState())
 // Note that subscribe() returns a function for unregistering the listener
 store.subscribe(state => console.log(state))
 
-const actions = store.getActions()
+const actions = store.actions
 
 // Dispatch some actions
 actions.todos.add('Learn about actions'))
@@ -325,9 +325,9 @@ const INITIAL_STATE = []
 
 const actions = {
   /* appends a new todo to the list, completed defaults to false */
-  add: (state, actions, text) => [...state, { text, completed: false }],
+  add: (state) => (text) => [...state, { text, completed: false }],
   /* updates the text of the todo at a given index */
-  edit: (state, actions, index, text) => {
+  edit: (state) => (index, text) => {
     // use Array.map to avoid mutating the state
     return state.map((todo, i) => {
       if (i == index) {
@@ -339,11 +339,11 @@ const actions = {
     })
   },
   /* removes the todo at index from the list */
-  delete: (state, actions, index) => {
+  delete: (state) => (index) => {
     return [...state.slice(0, index), ...state.slice(index + 1)]
   }
   /* toggles the completed flag of the todo at index */
-  toggle: (state, actions, index) => {
+  toggle: (state) => (index) => {
     return state.map((todo, i) => {
       if (i == index) {
         return { ...todo, completed: !todo.completed }
@@ -378,7 +378,7 @@ const INITIAL_STATE = VisibilityFilter.SHOW_ALL
 
 const actions = {
   /* changes the value of the visibilty filter */
-  set: (state, actions, filter) => filter
+  set: () => (filter) => filter
 }
 
 export const visibilityFilterReducer = createReducer(actions, INITIAL_STATE)
@@ -416,7 +416,7 @@ export default store
 // index.js
 import store from 'store'
 
-const actions = store.getActions()
+const actions = store.actions
 
 actions.todos.add('Learn about actions'))
 actions.todos.add('Learn about reducers'))

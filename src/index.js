@@ -75,7 +75,7 @@ const applyMiddlewares = (actionName, payload) => {
 const wrapFunction = (fn, parentName, actionName) => {
   return (...args) => {
     const stateCopy = deep.copy(parentName ? _state[parentName] : _state)
-    const partialState = fn(stateCopy, _reducers, ...args)
+    const partialState = fn(stateCopy, _reducers)(...args)
 
     if (partialState instanceof Promise) {
       partialState.then(result => {

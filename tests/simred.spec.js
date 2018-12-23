@@ -2,10 +2,10 @@ const { default: Simred, createReducer } = require('../src/index')
 
 const fixtures = {
   actions: {
-    add: (state, actions, object) => {
+    add: (state) => (object) => {
       return [...state, object]
     },
-    reset: (state, actions) => {
+    reset: () => () => {
       return []
     }
   },
@@ -182,7 +182,7 @@ describe('Simred test Suite', function () {
     const actions = {
       todos: {
         list: {
-          add: (state, actions, todo) => {
+          add: (state) => (todo) => {
             console.log(state)
             return [...state, todo]
           }
@@ -207,7 +207,7 @@ describe('Simred test Suite', function () {
     let receivedState = {}
 
     const sharedActions = {
-      doSomething: (state, actions, arg) => {
+      doSomething: (state) => () => {
         receivedState = state
 
         return { ...state }
@@ -215,14 +215,14 @@ describe('Simred test Suite', function () {
     }
 
     const todoActions = {
-      add: (state, actions, arg) => [...state, arg]
+      add: (state) => (arg) => [...state, arg]
     }
 
     const todoInitialState = []
 
     const listActions = {
-      append: (state, actions, arg) => [...state, arg],
-      reset: (state, actions) => []
+      append: (state) => (arg) => [...state, arg],
+      reset: () => () => []
     }
 
     const listInitialState = []
@@ -256,10 +256,10 @@ describe('Simred test Suite', function () {
 
   it('actions can return undefined', function () {
     const actions = {
-      add: (state, actions, todo) => {
+      add: () => () => {
         return 
       },
-      reset: () => []
+      reset: () => () => []
     }
 
     const initialState = {
@@ -279,8 +279,8 @@ describe('Asynchronous Actions', function () {
 
   it('actions can be asynchronous', function () {
     const listActions = {
-      append: async (state, actions, arg) => [...state, arg],
-      reset: (state, actions) => []
+      append: (state) => async (arg) => [...state, arg],
+      reset: () => () => []
     }
 
     const listInitialState = []
