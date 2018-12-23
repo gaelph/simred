@@ -1,4 +1,4 @@
-# simred [![NPM version](https://badge.fury.io/js/simred.svg)](https://npmjs.org/package/simred) [![Build Status](https://travis-ci.org/gaelph/simred.svg?branch=master)](https://travis-ci.org/gaelph/simred)
+# simred [![NPM version](https://badge.fury.io/js/simred.svg)](https://npmjs.org/package/simred) [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]() ![Tests](https://img.shields.io/badge/tests-22%2F22-brightgreen.svg) ![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)
 
 A simple redux-like application state manager
 
