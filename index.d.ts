@@ -1,31 +1,23 @@
-interface ReducerDescriptor<T> {
-  actions: Reducer<T>,
+interface ReducerDescriptor {
+  actions: Reducer,
   state?: any
 }
 
-type Reducer<T> = {
-  [K in keyof T]: (...args: any[]) => void
-}
-
-type Payload = any
-
-type ListenerFunction = (state: any) => void
-export type MiddlewareFunction = (actionName: string, action: Payload, next: () => void) => void
+type Reducer = any
 
 export interface Store<T> {
   getState(): T
   getActions(): any
-  subscribe(listener: ListenerFunction): void
-  addMiddleware(middleware: MiddlewareFunction): void
+  subscribe(listener: (state: any) => void): void
+  addMiddleware(middleware: (actionName: string, paylaod: any, next: () => void) => void): void
 }
 
-// export namespace Simred {
   
-  export function createReducer<T>(reducer: T, initialState?: any): ReducerDescriptor<T>
+export function createReducer(reducer: Reducer, initialState?: any): ReducerDescriptor
 
-  export function getState(): any
-  export function getActions(): any
-// }
+export function getState(): any
+export function getActions(): any
+
 
 export namespace Simred {
   export function createStore(reducers: any, initialState?: any): Store<any>

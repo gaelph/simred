@@ -1,3 +1,8 @@
+/**
+ * @module Simred
+ * A global store manage
+ */
+
 import * as deep from './deep'
 
 let _state = {}
@@ -6,33 +11,11 @@ let _reducers = {}
 let _listeners = []
 let _middlewares = []
 
-/**
- * @callback MiddlewareFunction
- * @param {string} name Action name
- * @param {*} payload Action payload
- * @param {() => undefined} next Next middleware
- */
 
 /**
- * @callback ListenerFunction
- * @param {State} state 
- */
-
-/**
- * @public
- * @typedef {Object} Store
- * @property {() => State} getState
- * @property {() => object} getActions
- * @property {(listener: ListenerFunction) => undefined} subscribe
- * @property {(middleware: MiddlewareFunction) => undefined} addMiddleware
- */
-
-
-
-/**
- * @private
  * Calls every registered listener to notify a state update
  * @param {State} state A copy of updated state
+ * @private
  */
 const onStateUpdate = (state) => {
   _listeners.forEach(listener => {
@@ -41,11 +24,11 @@ const onStateUpdate = (state) => {
 }
 
 /**
- * @private
  * Updates the state by deeply merging the partial update into the original state
  * @param {State} stateCopy     A Copy of the state
  * @param {State} partialState  The updated data
  * @param {string} name          The sub part of the state to update
+ * @private
  */
 const updateState = (stateCopy, partialState, name) => {
   let newState = {}
@@ -66,11 +49,11 @@ const updateState = (stateCopy, partialState, name) => {
 }
 
 /**
- * @private
  * Calls every registered middleware to notify an action took place
  * This is called *after* the state was updated and listeners notified
  * @param {string} actionName 
  * @param {object|array} payload 
+ * @private
  */
 const applyMiddlewares = (actionName, payload) => {
   _middlewares.reverse().reduce((next, middleware) => {
@@ -81,13 +64,13 @@ const applyMiddlewares = (actionName, payload) => {
 }
 
 /**
- * @private
  * Bind an action to its state slice
  * Actions can return promises
- * @param {ActionFunction} fn  The action to bind: (state, actions, args...) => state
+ * @param {(state, actions, args...) => state} fn  The action to bind
  * @param {string} parentName  The name of the reducer this actions belongs to
  * @param {string} actionName  The action name
  * @returns {Function} (args...) => void
+ * @private
  */
 const wrapFunction = (fn, parentName, actionName) => {
   return (...args) => {
@@ -108,11 +91,11 @@ const wrapFunction = (fn, parentName, actionName) => {
 }
 
 /**
- * @private
  * Binds all actions in a reducer to the state
  * @param {object} actions    All functions to bind
  * @param {string} parentName Reducer name
  * @returns {object}
+ * @private
  */
 const wrapActions = (actions, parentName) => {
   return Object.keys(actions).reduce((acc, name) => {
@@ -128,15 +111,13 @@ const wrapActions = (actions, parentName) => {
 }
 
 /**
- * @public
- * @static
  * Creates a reducer
  * All actions in the reducer will be called with a state slice of the shape of `initialState`,
  * and will never see the global state.
  * If `initialState == undefined`, actions will be called with the whole global state.
  * This allows actions to handle many-to-many relations between state slices.
  * @param {object} actions 
- * @param {[object]} initialState 
+ * @param {object} [initialState]
  */
 export const createReducer = (actions, initialState) => {
   const reducer = {
@@ -172,56 +153,66 @@ export function getActions() {
   return _reducers
 }
 
-/**
- * @module Simred
- * A global store manager
- */
+
 export default {
   /**
-   * @public
-   * @static
-   * @memberof Simred
    * Creates store
+   * @param {object} reducers  The combined reducers
+   * @param {object} [state]   An optional initial state to initialize the store with
    * @return {Store}
    */
   createStore: (reducers, state) => {
     if (!reducers) throw new Error('reducers cannot be undefined')
 
+    // init globals
     _state = {}
     _reducers = {}
 
+    // If createStore is called with a state, use this
     if (state) {
       _state = state
     }
 
+    // build _state and _reducers
     try {
       Object.keys(reducers).forEach(key => {
         const { actions, state } = reducers[key]
         let stateName = undefined
 
-        if (state) {
-          if (_state[key]) {
+        if (state) { // reducer is linked to a state slice
+          if (_state[key]) { // global state received an initial value
             _state[key] = deep.merge(state, _state[key])
           }
-          else {
+          else { // use reducer's initialState
             _state[key] = deep.copy(state)
           }
-          stateName = key
+          stateName = key // the state slice name
         }
 
-        _reducers[key] = wrapActions(actions, stateName)
+        const wrappedAction = wrapActions(actions, stateName)
+
+        // Add the action to the rootReducer as a readonly property
+        Object.defineProperty(_reducers, key, {
+          configurable: false,
+          enumerable: true,
+          writable: false,
+          value: wrappedAction
+        })
       })
     } catch (e) {
       throw e
     }
 
     const store = {
+      // Returns a copy of the current state
       getState: () => deep.copy(_state),
-
+      // Returns all actions
       getActions: () => _reducers,
+      // Suscribes to every state change
       subscribe: (listener) => {
         _listeners.push(listener)
       },
+      // Add a middleware that will called after every action was called
       addMiddleware: (middleware) => {
         _middlewares.push(middleware)
       }

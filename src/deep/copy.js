@@ -1,5 +1,4 @@
 /**
- * @private
  * Deeply copies an object
  * @param {object} obj Object to Copy
  * @return {object}
