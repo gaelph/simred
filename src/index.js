@@ -206,8 +206,6 @@ export default {
     const store = {
       // Returns a copy of the current state
       getState: () => deep.copy(_state),
-      // Returns all actions
-      getActions: () => _reducers,
       // Suscribes to every state change
       subscribe: (listener) => {
         _listeners.push(listener)
@@ -217,6 +215,13 @@ export default {
         _middlewares.push(middleware)
       }
     }
+
+    Object.defineProperty(store, 'actions', {
+      configurable: false,
+      enumerable: false,
+      set: () => { throw new Error('Stores actions are readonly') },
+      get: () => _reducers
+    })
 
     return store
   },

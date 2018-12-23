@@ -27,5 +27,17 @@
     "jest": "^23.6.0",
     "react-test-renderer": "^16.7.0"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}",
+      "!**/node_modules/**",
+      "!**/vendor/**"
+    ],
+    "coverageReporters": [
+      "html",
+      "text"
+    ]
+  }
 }

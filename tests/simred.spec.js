@@ -1,4 +1,4 @@
-const { default: Simred, createReducer } = require('../lib/index')
+const { default: Simred, createReducer } = require('../src/index')
 
 const fixtures = {
   actions: {
@@ -51,12 +51,12 @@ describe('Simred test Suite', function () {
 
     expect(typeof store).toBe('object')
     expect(store).toHaveProperty('getState')
-    expect(store).toHaveProperty('getActions')
+    expect(store).toHaveProperty('actions')
     expect(store).toHaveProperty('subscribe')
     expect(store).toHaveProperty('addMiddleware')
 
     expect(typeof store.getState).toBe('function')
-    expect(typeof store.getActions).toBe('function')
+    expect(typeof store.actions).toBe('object')
     expect(typeof store.subscribe).toBe('function')
     expect(typeof store.addMiddleware).toBe('function')
   })
@@ -76,18 +76,31 @@ describe('Simred test Suite', function () {
     expect(state).toStrictEqual(otherState)
   })
 
-  it('getActions() returns all actions', function () {
+  it('store.actions returns all actions', function () {
     const { actions, initialState } = fixtures
     const reducers = {
       list: createReducer(actions, initialState)
     }
 
     const store = Simred.createStore(reducers)
-    const storeActions = store.getActions()
+    const storeActions = store.actions
 
     expect(storeActions).toHaveProperty('list')
     expect(storeActions.list).toHaveProperty('add')
     expect(typeof storeActions.list.add).toBe('function')
+  })
+
+  it('throws when trying to write on actions', function () {
+    const { actions, initialState } = fixtures
+    const reducers = {
+      list: createReducer(actions, initialState)
+    }
+
+    const store = Simred.createStore(reducers)
+    
+    const badFunction = () => store.actions = undefined
+
+    expect(badFunction).toThrow()
   })
 
   it('module and object getState() and getActions() have same result', function () {
@@ -102,7 +115,7 @@ describe('Simred test Suite', function () {
     const moduleActions = Simred.getActions()
 
     const objectState = store.getState()
-    const objectActions = store.getActions()
+    const objectActions = store.actions
     
     expect(moduleState).toMatchObject(objectState)
     expect(moduleActions).toMatchObject(objectActions)
@@ -122,7 +135,7 @@ describe('Simred test Suite', function () {
       moddedState = state
     })
 
-    store.getActions().list.add('test')
+    store.actions.list.add('test')
 
     expect(moddedState).not.toMatchObject(initState)
     expect(moddedState).toMatchObject({ list: ['test'] })
@@ -145,7 +158,7 @@ describe('Simred test Suite', function () {
       next()
     })
 
-    store.getActions().list.add('test')
+    store.actions.list.add('test')
 
     expect(middlewarecalls.length).toBe(1)
     expect(middlewarecalls[0].actionName).toBe('list.add')
@@ -223,7 +236,7 @@ describe('Simred test Suite', function () {
     const store = Simred.createStore(reducers)
 
     const resultState = store.getState()
-    const resultActions = store.getActions()
+    const resultActions = store.actions
 
     expect(resultState).toHaveProperty('todos')
     expect(resultActions).toHaveProperty('todos')
@@ -257,7 +270,7 @@ describe('Simred test Suite', function () {
       list: createReducer(actions, initialState)
     })
 
-    expect(store.getActions().list.add).not.toThrow()
+    expect(store.actions.list.add).not.toThrow()
   })
 
 })
@@ -284,7 +297,7 @@ describe('Asynchronous Actions', function () {
         resolve()
       })
 
-      const actions = store.getActions()
+      const actions = store.actions
   
       actions.list.append('a')
     })
