@@ -23,6 +23,7 @@ A simple redux-like application state manager
   - [Reducers](#reducers)
   - [Store](#store)
 - [Complete Example: To-do List](#complete-example-to-do-list)
+- [Usage with React](#usage-with-react)
 - [License](#license)
 
 ## Installation
@@ -287,8 +288,6 @@ The have a text and a completed status.
 
 We want the following functionalities:
 - add a todo to the list of todos;
-- delete a todo from the list of todos;
-- change the text of a todo;
 - toggle the completed status of a given todo;
 - show either: all todos, completed todos, or remaining todos.
 
@@ -328,22 +327,6 @@ const INITIAL_STATE = []
 const actions = {
   /* appends a new todo to the list, completed defaults to false */
   add: (state) => (text) => [...state, { text, completed: false }],
-  /* updates the text of the todo at a given index */
-  edit: (state) => (index, text) => {
-    // use Array.map to avoid mutating the state
-    return state.map((todo, i) => {
-      if (i == index) {
-        return { ...todo, text }
-      }
-      else {
-        return todo
-      }
-    })
-  },
-  /* removes the todo at index from the list */
-  delete: (state) => (index) => {
-    return [...state.slice(0, index), ...state.slice(index + 1)]
-  }
   /* toggles the completed flag of the todo at index */
   toggle: (state) => (index) => {
     return state.map((todo, i) => {
@@ -436,8 +419,9 @@ Console:
 { todos: [ { text: "Learn about actions", completed: true }, { text: "Learn about reducers", completed: true }, { text: "Learn about store", completed: false } ], visibilityFilter: "SHOW_ALL" }
 { todos: [ { text: "Learn about actions", completed: true }, { text: "Learn about reducers", completed: false }, { text: "Learn about store", completed: false } ], visibilityFilter: "SHOW_COMPLETED" }
 ```
-
 ---
+## Usage with React
+See the [react-simred]() project to learn how to use Simred with React
 ## License
 
 MIT © [Gaël PHILIPPE](https://github.com/gaelph)
