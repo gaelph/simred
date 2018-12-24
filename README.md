@@ -1,4 +1,4 @@
-# simred [![NPM version](https://badge.fury.io/js/simred.svg)](https://npmjs.org/package/simred) [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]() ![Tests](https://img.shields.io/badge/tests-22%2F22-brightgreen.svg) ![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)
+# simred [![NPM version](https://badge.fury.io/js/simred.svg)](https://npmjs.org/package/simred) ![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg) ![Tests](https://img.shields.io/badge/tests-22%2F22-brightgreen.svg) ![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)
 
 A simple redux-like application state manager
 
@@ -430,7 +430,7 @@ Console:
 ```
 ---
 ## Usage with React
-See the [react-simred]() project to learn how to use Simred with React
+See the [react-simred](https://github.com/gaelph/react-simred) project to learn how to use Simred with React
 ## License
 
 MIT © [Gaël PHILIPPE](https://github.com/gaelph)
