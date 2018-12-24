@@ -5,22 +5,22 @@ interface ReducerDescriptor {
 
 type Reducer = any
 
-export interface Store<T> {
+export interface Store<T, R> {
+  actions: R
   getState(): T
-  getActions(): any
-  subscribe(listener: (state: any) => void): void
-  addMiddleware(middleware: (actionName: string, paylaod: any, next: () => void) => void): void
+  subscribe(listener: (state: T) => void): void
+  addMiddleware(middleware: (store: Store<T, R>) => (next: () => void) => (actionName: string, paylaod: any) => void): void
 }
 
   
-export function createReducer(reducer: Reducer, initialState?: any): ReducerDescriptor
+export function createReducer(reducer: Reducer, initialState?: any, middlewares?: ((store: Store<any, any>) => (next: () => void) => (actionName: string, paylaod: any) => void)[]): ReducerDescriptor
 
 export function getState(): any
 export function getActions(): any
 
 
 export namespace Simred {
-  export function createStore(reducers: any, initialState?: any): Store<any>
+  export function createStore<R, S>(reducers: R, initialState?: S): Store<S, R>
 }
 
 declare const simred: typeof Simred
