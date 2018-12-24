@@ -21,6 +21,11 @@
   ],
   "author": "Gaël PHILIPPE",
   "license": "MIT",
+  "homepage": "https://github.com/gaelph",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gaelph/simred"
+  },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-jest": "^23.6.0",
