@@ -4,7 +4,7 @@ import { uuid } from '../utils'
 
 
 
-export const add = (todos, actions, title) => {
+export const add = (todos) => (title) => {
   return [...todos, {
     id: uuid(),
     title,
@@ -12,7 +12,7 @@ export const add = (todos, actions, title) => {
   }]
 }
 
-export const toggle = (todos, actions, todoToToggle) => {
+export const toggle = (todos) => (todoToToggle) => {
   return todos.map(todo => {
     if (todo.id == todoToToggle.id) {
       return { ...todo, completed: !todo.completed }
@@ -23,15 +23,15 @@ export const toggle = (todos, actions, todoToToggle) => {
   })
 }
 
-export const toggleAll = (todos, actions, checked) => {
+export const toggleAll = (todos) => (checked) => {
   return todos.map(todo => ({ ... todo, completed: checked }))
 }
 
-export const destroy = (todos, actions, todoToDestroy) => {
+export const destroy = (todos) => (todoToDestroy) => {
   return todos.filter(todo => todo.id !== todoToDestroy.id)
 }
 
-export const save = (todos, actions, todoToSave) => {
+export const save = (todos) => (todoToSave) => {
   return todos.map(todo => {
     if (todo.id == todoToSave.id) {
       return {... todo, title: todoToSave.title}
@@ -42,7 +42,7 @@ export const save = (todos, actions, todoToSave) => {
   })
 }
 
-export const clearCompleted = (todos, actions) => {
+export const clearCompleted = (todos) => () => {
   return todos.filter(todo => !todo.completed)
 }
 

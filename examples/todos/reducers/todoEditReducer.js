@@ -6,7 +6,7 @@ const INITIAL_STATE = {
 }
 
 export const TodoEditReducer = createReducer({
-  editTodo: (state, actions, todo) => {
+  editTodo: (_state, actions) => (todo) => {
     if (todo) {
         actions.todoEdit.updateEditTodo(todo.title)
         return {
@@ -17,7 +17,7 @@ export const TodoEditReducer = createReducer({
         return INITIAL_STATE
       }
     },
-    updateEditTodo: (state, actions, editText) => {
+    updateEditTodo: (state) => (editText) => {
       return { ...state,
         editText
       }

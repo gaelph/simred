@@ -3,10 +3,10 @@ import { Filters } from '../constants'
 
 
 export const FilterReducer = createReducer({
-  set: (filter, actions, filterToSet) => {
+  set: () => (filterToSet) => {
     return filterToSet
   },
-  updateFromLocation: (filter, actions, location) => {
+  updateFromLocation: (filter, actions) => (location) => {
     setTimeout(() => {
       switch (location.pathname) {
         case '/active':

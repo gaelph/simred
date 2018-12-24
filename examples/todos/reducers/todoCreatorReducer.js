@@ -5,7 +5,7 @@ const INITIAL_STATE = {
 }
 
 export const TodoCreatorReducer = createReducer({
-    setNewTodo: (app, actions, newTodo) => {
+    setNewTodo: () => (newTodo) => {
       return {
         newTodo
       }
