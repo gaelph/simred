@@ -13,14 +13,14 @@ export interface Store<T, R> {
 }
 
   
-export function createReducer(reducer: Reducer, initialState?: any, middlewares?: ((store: Store<any, any>) => (next: () => void) => (actionName: string, paylaod: any) => void)[]): ReducerDescriptor
+export function createReducer(reducer: Reducer, initialState?: any): ReducerDescriptor
 
 export function getState(): any
 export function getActions(): any
 
 
 export namespace Simred {
-  export function createStore<R, S>(reducers: R, initialState?: S): Store<S, R>
+  export function createStore<R, S>(reducers: R, initialState?: S, middlewares?: ((store: Store<any, any>) => (next: () => void) => (actionName: string, paylaod: any) => void)[]): Store<S, R>
 }
 
 declare const simred: typeof Simred
