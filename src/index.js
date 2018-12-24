@@ -55,13 +55,14 @@ const updateState = (stateCopy, partialState, name) => {
  * @param {object|array} payload 
  * @private
  */
-const applyMiddlewares = (actionName, payload) => {
+const applyMiddlewares = (store) => (actionName, payload) => {
   _middlewares.reverse().reduce((next, middleware) => {
     return () => {
-      middleware(actionName, payload, next)
+      middleware(store)(next)(actionName, payload)
     }
   }, () => { })()
 }
+let _applyMiddlewares = () => { }
 
 /**
  * Bind an action to its state slice
@@ -79,12 +80,12 @@ const wrapFunction = (fn, parentName, actionName) => {
 
     if (partialState instanceof Promise) {
       partialState.then(result => {
+        _applyMiddlewares(`${parentName}.${actionName}`, args)
         updateState(stateCopy, result, parentName)
-        applyMiddlewares(`${parentName}.${actionName}`, args)
       })
     } else {
+      _applyMiddlewares(`${parentName}.${actionName}`, args)
       updateState(stateCopy, partialState, parentName)
-      applyMiddlewares(`${parentName}.${actionName}`, args)
     }
 
   }
@@ -161,7 +162,7 @@ export default {
    * @param {object} [state]   An optional initial state to initialize the store with
    * @return {Store}
    */
-  createStore: (reducers, state) => {
+  createStore: (reducers, state, middlewares = []) => {
     if (!reducers) throw new Error('reducers cannot be undefined')
 
     // init globals
@@ -215,6 +216,10 @@ export default {
         _middlewares.push(middleware)
       }
     }
+
+    _applyMiddlewares = applyMiddlewares(store)
+    middlewares.forEach(middleware => _middlewares.push(middleware))
+    _applyMiddlewares('@@init', [_state])
 
     Object.defineProperty(store, 'actions', {
       configurable: false,

@@ -141,6 +141,27 @@ describe('Simred test Suite', function () {
     expect(moddedState).toMatchObject({ list: ['test'] })
   })
 
+  it('adds middleware on createStore', function () {
+    const { actions, initialState } = fixtures
+    const reducers = {
+      list: createReducer(actions, initialState)
+    }
+
+    let middlewarecalls = []
+    const middlewares = [
+      (store) => (next) => (actionName, actionPayload) => {
+        middlewarecalls.push({
+          actionName,
+          actionPayload
+        })
+
+        next()
+      }
+    ]
+
+    Simred.createStore(reducers, {}, middlewares)
+  })
+
   it('calls middlewares when an action is called', function () {
     const { actions, initialState } = fixtures
     const reducers = {
@@ -150,7 +171,7 @@ describe('Simred test Suite', function () {
     const store = Simred.createStore(reducers)
     
     let middlewarecalls = []
-    store.addMiddleware((actionName, actionPayload, next) => {
+    store.addMiddleware((store) => (next) => (actionName, actionPayload) => {
       middlewarecalls.push({
         actionName, actionPayload
       })
@@ -296,6 +317,7 @@ describe('Asynchronous Actions', function () {
 
         resolve()
       })
+
 
       const actions = store.actions
   

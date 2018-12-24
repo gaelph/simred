@@ -25,7 +25,8 @@
     "babel-preset-react": "^6.24.1",
     "istanbul": "^0.4.5",
     "jest": "^23.6.0",
-    "react-test-renderer": "^16.7.0"
+    "react-test-renderer": "^16.7.0",
+    "redux-devtools-extension": "^2.13.7"
   },
   "dependencies": {},
   "jest": {
@@ -33,6 +34,7 @@
     "collectCoverageFrom": [
       "src/**/*.{js,jsx}",
       "!**/node_modules/**",
+      "!tests/jest.setup.js",
       "!**/vendor/**"
     ],
     "coverageReporters": [
