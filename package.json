@@ -9,10 +9,15 @@
   },
   "keywords": [
     "state",
+    "reducer",
+    "predictable",
+    "functionnal",
+    "immutable",
+    "redux",
+    "flux",
+    "elm",
     "manager",
-    "state",
-    "management",
-    "redux"
+    "management"
   ],
   "author": "Gaël PHILIPPE",
   "license": "MIT",
