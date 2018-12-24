@@ -1,4 +1,4 @@
-# simred [![NPM version](https://badge.fury.io/js/simred.svg)](https://npmjs.org/package/simred) [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]() ![Tests](https://img.shields.io/badge/tests-22%2F22-brightgreen.svg) ![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)
+# simred [![NPM version](https://badge.fury.io/js/simred.svg)](https://npmjs.org/package/simred) [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]() ![Tests](https://img.shields.io/badge/tests-24%2F24-brightgreen.svg) ![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)
 
 A simple redux-like application state manager
 
@@ -264,20 +264,32 @@ They can be used for a variety of things, such as logging, storing the state, et
 
 A middleware consist in a function with signature:
 ```typescript
-(action: string, args: any[], next: Function) => void
+(store: Store) => (next: Function) => (action: string, args: any[]) => void
 ```
 Where:
- - `action` is the name of the part of state and of the function (e.g.: `"todos.add"`)
- - `args` is an array of arguments the action received (e.g.: `"Learn about actions"`)
+ - `store` is the store, with `.actions`, `.getState()`, etc
  - `next` is the next middleware in the stack, middleware are executed in the same order they added to the store
+ - `action` is the name of the part of state and of the function (e.g.: `"todos.add"`)
+ - `args` is an array of arguments the action received (e.g.: `["Learn about actions"]`)
+
+ Middleware can be added in one of two ways:
+ - using `Simred.createStore(reducers, initialState, middlewares)`, where the third argument is an array of middlewares
+ - using `store.addMiddleware(middleware)`, on an existing store
 
 Here is an example of a logging middleware:
 ```js
-store.addMiddleware((action, args, next) => {
+// The middleware itself
+const logger = store => next => (action, arts) => {
   console.log({ action, args })
 
   next() // Calls the next middleware on the stack
 })
+
+// add it at store creation time
+const store = Simred.createStore(reducers, {}, [logger])
+
+// OR after the fact
+store.addMiddleware(logger)
 ```
 ---
 ## Complete Example: To-do List
