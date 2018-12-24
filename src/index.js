@@ -80,12 +80,12 @@ const wrapFunction = (fn, parentName, actionName) => {
 
     if (partialState instanceof Promise) {
       partialState.then(result => {
-        _applyMiddlewares(`${parentName}.${actionName}`, args)
         updateState(stateCopy, result, parentName)
+        _applyMiddlewares(`${parentName}.${actionName}`, args)
       })
     } else {
-      _applyMiddlewares(`${parentName}.${actionName}`, args)
       updateState(stateCopy, partialState, parentName)
+      _applyMiddlewares(`${parentName}.${actionName}`, args)
     }
 
   }
