@@ -11,9 +11,6 @@ A simple redux-like application state manager
 - Supports middlewares through `addMiddleware()`
 - Has type definitions for Typescript™
 
-### TO DO
-- [ ] redux-dev-tools support
-
 ## Table of Content
 - [Installation](#installation)
 - [Getting Started](#getting-started)
