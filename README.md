@@ -11,6 +11,14 @@ A simple redux-like application state manager
 - Supports middlewares through `addMiddleware()`
 - Has type definitions for Typescript™
 
+## TODO
+- [ ] unsbscribe function
+- [ ] Making all actions available as properties of store.actions, indenpendently from the key in the reducer
+- [ ] Allow for "scoped" reducers
+- [ ] `composeReducers(...reducers: Reducer[]): Reducer` function to allow for reducer composition
+- [ ] Support for generators, i.e. cancellable async actions
+- [ ] Code Splitting
+
 ## Table of Content
 - [Installation](#installation)
 - [Getting Started](#getting-started)
