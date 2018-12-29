@@ -209,7 +209,15 @@ export default {
       getState: () => deep.copy(_state),
       // Suscribes to every state change
       subscribe: (listener) => {
+        function unsubcribe() {
+          const i = _listeners.indexOf(listener)
+
+          _listeners.splice(i, 1)
+        }
+
         _listeners.push(listener)
+
+        return unsubcribe
       },
       // Add a middleware that will called after every action was called
       addMiddleware: (middleware) => {
