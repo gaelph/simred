@@ -12,10 +12,10 @@ A simple redux-like application state manager
 - Has type definitions for Typescript™
 
 ## TODO
-- [ ] unsbscribe function
-- [ ] Making all actions available as properties of store.actions, indenpendently from the key in the reducer
+- [x] unsbscribe function
+- [x] Making all actions available as properties of store.actions, indenpendently from the key in the reducer
 - [ ] Allow for "scoped" reducers
-- [ ] `composeReducers(...reducers: Reducer[]): Reducer` function to allow for reducer composition
+- [x] `composeReducers(...reducers: Reducer[]): Reducer` function to allow for reducer composition
 - [ ] Support for generators, i.e. cancellable async actions
 - [ ] Code Splitting
 

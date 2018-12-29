@@ -102,6 +102,19 @@ const wrapActions = (actions, parentName) => {
   return Object.keys(actions).reduce((acc, name) => {
     if (typeof actions[name] === 'function') {
       acc[name] = wrapFunction(actions[name], parentName, name)
+
+      if (!_reducers[name]) {
+        Object.defineProperty(_reducers, name, {
+          configurable: false,
+          enumerable: true,
+          writable: false,
+          value: acc[name]
+        })
+      } else {
+        console.warn(`${parentName}.${name}: Root reducer already has a function "${name}".
+ Only the one assigned first will be available as "store.actions.${name}()".
+ This one will be available under "store.actions.${parentName}.${name}()`)
+      }
     }
     else {
       throw new Error(`Invalid reducer: ${name} is not a function`)
@@ -130,6 +143,31 @@ export const createReducer = (actions, initialState) => {
   }
 
   return reducer
+}
+
+/**
+ * @public
+ * @static
+ * @memberof Simred
+ * Returns a composed reducer
+ * @param  {Reducer[]} reducers 
+ * @returns {Reducer}
+ * @example
+ *     // has actions: add() remove(), and state: { items: [] }
+ *     const reducerA = createReducer(actionsA, stateA)
+ *     // has actions: setEditing(), and state: { is_editing: false }
+ *     const reducerB = createReducer(actionsB, stateB)
+ * 
+ *     // has actions: add() remove() setEditing(), and state: { is_editing: false, items: [] }
+ *     const composedReducer = composeReducer(reducerA, reducerB)
+ */
+export const composeReducers = (...reducers) => {
+  return reducers.reduce((composed, reducer) => {
+    composed = {
+      actions: { ...composed.actions, ...reducer.actions },
+      state: { ...composed.state, ...reducer.state }
+    }
+  }, { actions: {}, state: {}})
 }
 
 /**
