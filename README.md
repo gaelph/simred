@@ -165,6 +165,58 @@ const actions = {
 export default createReducer(actions)
 ```
 
+#### Reducer composition
+One can compose reducers using `composeReducers(...reducers: Reducer[]): Reducer`.  
+This hepls factorising your code easily applying similiar behaviours to different reducers.
+
+**Example**
+```js
+// listReducer.js
+const actions = {
+  add_item: (state) => (item) => ({ list: [...state.list, item] }),
+  received: (state) => (items) => ({ list: items })
+}
+
+const initialState = { list: [] }
+```
+
+```js
+// objectReducer.js
+const actions = {
+  set_value: (state) => (value) => ({ value }),
+  received: (state) => (object) => object
+}
+
+const initialState = { value: false }
+```
+
+```js
+// fetchReducer.js
+const actions = {
+  set_is_fecthing: (state) => (is_fetching) => ({ is_fetching }),
+  fetch: (state, actions) => async () => {
+    (async () => {
+      const response = await Api.get(uri)
+
+      actions.received(response)
+      actions.set_is_fetching(false)
+    })()
+    
+    return { is_fetching: true }
+  }
+}
+```
+
+```js
+import listReducer from 'listReducer'
+import objectReducer from 'objectReducer'
+import fetchReducer from 'fetchReducer'
+import { composeReducers } from 'simred'
+
+const fetchListReducer = composeReducers(fetchReducer, listReducer)
+const fetchObjectReducer = composeReducers(fecthReducer, objectReducer)
+```
+
 #### Combining reducers
 ```js
 import reducerA from 'reducerA' // Has initialState == []
@@ -220,7 +272,7 @@ Now that we know about actions and reducers, let's bring them all together: that
 
 - The store holds the application state;
 - Allows access through `getState()`;
-- Allows access to actions (and therefore change the state) through `getActions()`;
+- Allows access to actions (and therefore change the state) through `actions` property;
 - Register listeners through `subscribe()`;
 - Registers middlewares thtough `addMiddleware()`;
 
@@ -255,6 +307,14 @@ store.subscribe(state => console.log(state))
 const actions = store.actions
 
 // Dispatch some actions
+actions.add('Learn about actions'))
+actions.add('Learn about reducers'))
+actions.add('Learn about store'))
+actions.toggle(0)
+actions.toggle(1)
+actions.visiblityFilter.set(VisibilityFilters.SHOW_COMPLETED)
+
+// Alternatively
 actions.todos.add('Learn about actions'))
 actions.todos.add('Learn about reducers'))
 actions.todos.add('Learn about store'))
