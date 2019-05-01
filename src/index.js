@@ -51,8 +51,8 @@ const updateState = (stateCopy, partialState, name) => {
 /**
  * Calls every registered middleware to notify an action took place
  * This is called *after* the state was updated and listeners notified
- * @param {string} actionName 
- * @param {object|array} payload 
+ * @param {string} actionName
+ * @param {object|array} payload
  * @private
  */
 const applyMiddlewares = (store) => (actionName, payload) => {
@@ -130,7 +130,7 @@ const wrapActions = (actions, parentName) => {
  * and will never see the global state.
  * If `initialState == undefined`, actions will be called with the whole global state.
  * This allows actions to handle many-to-many relations between state slices.
- * @param {object} actions 
+ * @param {object} actions
  * @param {object} [initialState]
  */
 export const createReducer = (actions, initialState) => {
@@ -146,18 +146,30 @@ export const createReducer = (actions, initialState) => {
 }
 
 /**
+ * Decorator to create a reducer
+ * @example
+ * const reducer = withInitialState(0)({
+ *   increment: (state, actions) => state + 1,
+ *   decrement: (state, actions) => state - 1
+ * })
+ */
+export const withInitialState = (initialState) => (actions) => {
+  return createReducer(actions, initialState)
+}
+
+/**
  * @public
  * @static
  * @memberof Simred
  * Returns a composed reducer
- * @param  {Reducer[]} reducers 
+ * @param  {Reducer[]} reducers
  * @returns {Reducer}
  * @example
  *     // has actions: add() remove(), and state: { items: [] }
  *     const reducerA = createReducer(actionsA, stateA)
  *     // has actions: setEditing(), and state: { is_editing: false }
  *     const reducerB = createReducer(actionsB, stateB)
- * 
+ *
  *     // has actions: add() remove() setEditing(), and state: { is_editing: false, items: [] }
  *     const composedReducer = composeReducer(reducerA, reducerB)
  */

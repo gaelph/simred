@@ -12,11 +12,7 @@ A simple redux-like application state manager
 - Has type definitions for Typescript™
 
 ## TODO
-- [x] unsbscribe function
-- [x] Making all actions available as properties of store.actions, indenpendently from the key in the reducer
 - [ ] Allow for "scoped" reducers
-- [x] `composeReducers(...reducers: Reducer[]): Reducer` function to allow for reducer composition
-- [ ] Support for generators, i.e. cancellable async actions
 - [ ] Code Splitting
 
 ## Table of Content
@@ -39,29 +35,26 @@ $ npm install --save simred
 
 ## Getting Started
 
-The first example is a simple counter.  
-Same as other state management libraries such as Redux, the state in contained in a single readonly object.  
+The first example is a simple counter.
+Same as other state management libraries such as Redux, the state in contained in a single readonly object.
 This only way to change it is to call "actions".
 To determine how actions change the state, you write pure reducers.
 ```js
-import Simred, { createReducer } from 'simred'
+import Simred, { withInitialState } from 'simred'
 
 /**
  * This is a reducer,
  * an object with only functions with signatures of:
  * (state, actions, ...args) => state
  * It discribes operation to transform the state
- * 
+ *
  * The shape of the state is up to you.
  */
-const counter = createReducer(
-  // actions
+const counter = withInitialState(0)(
   {
     increment: (state) => () => state + 1,
     decrement: (state) => () => state - 1
-  },
-  /* initial value for the state */
-  0
+  }
 )
 
 // Creates a Simred store to hold your data
@@ -108,7 +101,7 @@ They are functions of a reducer (see next section) with the following signature:
 The `state` argument is a copy of the part of state the action relates to.
 The `actions` argument is a read-only object containing all other actions in the store.
 
-Actions return an update of `state`. 
+Actions return an update of `state`.
 
 Actions can:
  - be asynchronous, return Promises and call other actions.
@@ -121,7 +114,7 @@ Actions must:
 >
 > Example declaration:
 > `const increment = (state, actions) => (n) => state + n`
-> 
+>
 > Example call:
 > `actions.counter.increment(3)`
 
@@ -133,15 +126,15 @@ They allow to organize your code better, splitting logic across separate reusabl
 
 An initial state can be provided to define default values for the part of state the reducer manages. If no initial state is provided, the reducer manages the whole state.
 
-Simred exposes a dedicated function to create reducers:
+Simred exposes a dedicated decorator function to create reducers:
 ```typescript
- createReducer(actions: any, initialState?: any): Reducer;
+ withInitialState(initialState?: any): (actions: any) => Reducer;
 ```
 
 **Examples:**
 A reducer managing only a part of state:
 ```js
-import { createReducer } from 'simred'
+import { withInitialState } from 'simred'
 
 const actions = {
   add: (state, actions) => (item) => [...state, item]
@@ -149,11 +142,11 @@ const actions = {
 
 const initialState = []
 
-export default createReducer(actions, initialState)
+export default withInitialState(initialState)(actions)
 ```
 A reducer managing the whole state:
 ```js
-import { createReducer } from 'simred'
+import { withInitialState } from 'simred'
 
 const actions = {
   add: (state, actions) => (item) => ({
@@ -162,7 +155,7 @@ const actions = {
   })
 }
 
-export default createReducer(actions)
+export default withInitialState()(actions)
 ```
 
 #### Combining reducers
@@ -188,12 +181,10 @@ Actions in `reducerB` can only interact with `storeState.a` by calling actions d
 
 // ...
 
-export default createReducer(
+export default withInitialState([])(
   {
     add: (state, _actions) => (item) => [...state, item]
-  },
-  // initial state
-  []
+  }
 )
 ```
 ```js
@@ -201,17 +192,15 @@ export default createReducer(
 
 // ...
 
-export default createReducer(
+export default withInitialState({ value: false})(
   {
     setValue: (state, actions) => (value) => {
       // calls "add" from reducerA
-      actions.a.add(value) 
+      actions.a.add(value)
 
       return { value }
     }
-  },
-  // initial state
-  { value: false }
+  }
 )
 ```
 
@@ -311,7 +300,7 @@ We want the following functionalities:
 ### Designing the state
 We'll use Typescript™ notation for easy reading.
 
-We identified two types of entities: 
+We identified two types of entities:
 - todos
 - visibility filer
 
@@ -336,12 +325,12 @@ interface State {
 ### The Todo Reducer
 ```js
 // todoReducer.js
-import { createReducer } from 'simred'
+import { withInitialState } from 'simred'
 
 /* Initial state for todos: an empty list */
 const INITIAL_STATE = []
 
-const actions = {
+export const todoReducer = withInitialState(INITIAL_STATE)({
   /* appends a new todo to the list, completed defaults to false */
   add: (state) => (text) => [...state, { text, completed: false }],
   /* toggles the completed flag of the todo at index */
@@ -355,9 +344,7 @@ const actions = {
       }
     })
   }
-}
-
-export const todoReducer = createReducer(actions, INITIAL_STATE)
+})
 ```
 ### The Visibility Filter Reducer
 ```js
@@ -372,18 +359,16 @@ export const VisibilityFilters = {
 ```
 ```js
 // visibilityFilterReducer.js
-import { createReducer } from 'simred'
+import { withInitialState } from 'simred'
 import { VisibilityFilters } from './filters'
 
 // The application will show all todos by default
 const INITIAL_STATE = VisibilityFilter.SHOW_ALL
 
-const actions = {
+export const visibilityFilterReducer = withInitialState(INITIAL_STATE)({
   /* changes the value of the visibilty filter */
   set: () => (filter) => filter
-}
-
-export const visibilityFilterReducer = createReducer(actions, INITIAL_STATE)
+})
 ```
 ### The Root Reducer
 ```js

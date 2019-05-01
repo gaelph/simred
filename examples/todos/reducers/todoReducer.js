@@ -1,8 +1,6 @@
-import { createReducer } from 'simred'
+import { withInitialState } from 'simred'
 
 import { uuid } from '../utils'
-
-
 
 export const add = (todos) => (title) => {
   return [...todos, {
@@ -46,11 +44,13 @@ export const clearCompleted = (todos) => () => {
   return todos.filter(todo => !todo.completed)
 }
 
-export const TodoReducer = createReducer({
-  add,
-  toggle,
-  toggleAll,
-  save,
-  destroy,
-  clearCompleted
-}, [])
+export const TodoReducer = withInitialState([])(
+  {
+    add,
+    toggle,
+    toggleAll,
+    save,
+    destroy,
+    clearCompleted
+  }
+)

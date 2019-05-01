@@ -1,11 +1,11 @@
-import { createReducer } from 'simred' 
+import { withInitialState } from 'simred'
 
 const INITIAL_STATE = {
   editing: null,
   editText: ''
 }
 
-export const TodoEditReducer = createReducer({
+export const TodoEditReducer = withInitialState(INITIAL_STATE)({
   editTodo: (_state, actions) => (todo) => {
     if (todo) {
         actions.todoEdit.updateEditTodo(todo.title)
@@ -22,5 +22,5 @@ export const TodoEditReducer = createReducer({
         editText
       }
     }
-  },
-INITIAL_STATE)
+  }
+)

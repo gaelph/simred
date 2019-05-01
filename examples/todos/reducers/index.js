@@ -4,11 +4,11 @@ import { TodoEditReducer } from './todoEditReducer'
 import { TodoCreatorReducer } from './todoCreatorReducer'
 import { RouterReducer, RouterInitialState } from 'simred-router'
 
-import { createReducer } from 'simred'
+import { withInitialState } from 'simred'
 
 
 export default {
-  router: createReducer(RouterReducer, RouterInitialState),
+  router: withInitialState(RouterInitialState)(RouterReducer),
   todoEdit: TodoEditReducer,
   todoCreate: TodoCreatorReducer,
   todos: TodoReducer,

@@ -1,4 +1,4 @@
-const { default: Simred, createReducer } = require('../src/index')
+const { default: Simred, createReducer, withInitialState } = require('../src/index')
 
 const fixtures = {
   actions: {
@@ -28,6 +28,23 @@ describe('Simred test Suite', function () {
     const { actions, initialState } = fixtures
 
     const reducer = createReducer(actions, initialState)
+
+    expect(typeof reducer).toBe('object')
+    expect(reducer).toHaveProperty('actions')
+    expect(reducer).toHaveProperty('state')
+
+    expect(typeof reducer.actions).toBe('object')
+    expect(reducer.actions).toHaveProperty('add')
+    expect(typeof reducer.actions.add).toBe('function')
+
+    expect(Array.isArray(reducer.state)).toBeTruthy()
+    expect(reducer.state.length).toBe(0)
+  })
+
+  it('creates a reducer with withInitialState decorator', function () {
+    const { actions, initialState } = fixtures
+
+    const reducer = withInitialState(initialState)(actions)
 
     expect(typeof reducer).toBe('object')
     expect(reducer).toHaveProperty('actions')
@@ -97,7 +114,7 @@ describe('Simred test Suite', function () {
     }
 
     const store = Simred.createStore(reducers)
-    
+
     const badFunction = () => store.actions = undefined
 
     expect(badFunction).toThrow()
@@ -116,7 +133,7 @@ describe('Simred test Suite', function () {
 
     const objectState = store.getState()
     const objectActions = store.actions
-    
+
     expect(moduleState).toMatchObject(objectState)
     expect(moduleActions).toMatchObject(objectActions)
   })
@@ -169,7 +186,7 @@ describe('Simred test Suite', function () {
     }
 
     const store = Simred.createStore(reducers)
-    
+
     let middlewarecalls = []
     store.addMiddleware((store) => (next) => (actionName, actionPayload) => {
       middlewarecalls.push({
@@ -278,7 +295,7 @@ describe('Simred test Suite', function () {
   it('actions can return undefined', function () {
     const actions = {
       add: () => () => {
-        return 
+        return
       },
       reset: () => () => []
     }
@@ -320,7 +337,7 @@ describe('Asynchronous Actions', function () {
 
 
       const actions = store.actions
-  
+
       actions.list.append('a')
     })
 

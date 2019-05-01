@@ -1,15 +1,15 @@
-import { createReducer } from 'simred'
+import { withInitialState } from 'simred'
 
 const INITIAL_STATE = {
   newTodo: '',
 }
 
-export const TodoCreatorReducer = createReducer({
+export const TodoCreatorReducer = withInitialState(INITIAL_STATE)(
+  {
     setNewTodo: () => (newTodo) => {
       return {
         newTodo
       }
     }
-  },
-  INITIAL_STATE
+  }
 )
