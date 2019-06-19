@@ -2,7 +2,8 @@
  * @module Simred
  * A global store manage
  */
-
+import "core-js/stable"
+import "regenerator-runtime/runtime"
 import * as deep from './deep'
 
 let _state = {}
